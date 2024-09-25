@@ -2856,6 +2856,26 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		ruleset: ['Obtainable', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Illusion Level Mod'],
 	},
 	{
+		name: "[Gen 7] Factory Random Battle",
+		mod: 'gen7',
+		team: 'randomFactory',
+		ruleset: ['Obtainable', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Illusion Level Mod'],
+	},
+	{
+		name: "[Gen 7] BSS Random Battle",
+		mod: 'gen7',
+		team: 'randomBSSFactory',
+		ruleset: ['Obtainable', 'Sleep Clause Mod', 'HP Percentage Mod', 'Cancel Mod', 'Illusion Level Mod'],
+	},
+	{
+		name: "[Gen 7] Random Doubles Battle",
+		mod: 'gen7',
+		gameType: 'doubles',
+		team: 'random',
+		searchShow: false,
+		ruleset: ['Obtainable', 'HP Percentage Mod', 'Cancel Mod', 'Illusion Level Mod'],
+	},
+	{
 		name: "[Gen 7] Battle Factory",
 		desc: `Randomized teams of Pok&eacute;mon for a generated Smogon tier with sets that are competitively viable.`,
 		mod: 'gen7',
@@ -3522,6 +3542,16 @@ export const Formats: import('../sim/dex-formats').FormatList = [
 		name: "[Gen 7] Doubles Custom Game",
 		mod: 'gen7',
 		gameType: 'doubles',
+		searchShow: false,
+		battle: {trunc: Math.trunc},
+		debug: true,
+		// no restrictions, for serious (other than team preview)
+		ruleset: ['Team Preview', 'Cancel Mod', 'Max Team Size = 24', 'Max Move Count = 24', 'Max Level = 9999', 'Default Level = 100'],
+	},
+	{
+		name: "[Gen 7] Triples Custom Game",
+		mod: 'gen7',
+		gameType: 'triples',
 		searchShow: false,
 		battle: {trunc: Math.trunc},
 		debug: true,

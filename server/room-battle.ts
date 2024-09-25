@@ -43,9 +43,9 @@ const SECONDS = 1000;
 // Timer constants: In seconds, should be multiple of TICK_TIME
 const STARTING_TIME = 150;
 const MAX_TURN_TIME = 150;
-const STARTING_TIME_CHALLENGE = 300;
+const STARTING_TIME_CHALLENGE = 24 * 60 * 60;
 const STARTING_GRACE_TIME = 60;
-const MAX_TURN_TIME_CHALLENGE = 300;
+const MAX_TURN_TIME_CHALLENGE = 24 * 60 * 60;
 
 const DISCONNECTION_TIME = 60;
 const DISCONNECTION_BANK_TIME = 300;
