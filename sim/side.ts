@@ -485,8 +485,7 @@ export class Side {
 		this.battle.send('sideupdate', `${this.id}\n${sideUpdate}`);
 	}
 
-	emitRequest(update: ChoiceRequest = this.activeRequest!, updatedRequest = false) {
-		if (updatedRequest) (this.activeRequest as MoveRequest | SwitchRequest).update = true;
+	emitRequest(update: ChoiceRequest) {
 		this.battle.send('sideupdate', `${this.id}\n|request|${JSON.stringify(update)}`);
 		this.activeRequest = update;
 	}
@@ -498,7 +497,7 @@ export class Side {
 		const updated = update ? this.updateRequestForPokemon(update.pokemon, update.update) : null;
 		const type = `[${updated ? 'Unavailable' : 'Invalid'} choice]`;
 		this.battle.send('sideupdate', `${this.id}\n|error|${type} ${message}`);
-		if (updated) this.emitRequest(this.activeRequest!, true);
+		if (updated) this.emitRequest(this.activeRequest!);
 		if (this.battle.strictChoices) throw new Error(`${type} ${message}`);
 		return false;
 	}

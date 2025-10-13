@@ -15,6 +15,7 @@ export class RandomPlayerAI extends BattlePlayer {
 	protected readonly move: number;
 	protected readonly mega: number;
 	protected readonly prng: PRNG;
+	protected lastRequest: AnyObject;
 
 	constructor(
 		playerStream: ObjectReadWriteStream<string>,
@@ -25,16 +26,21 @@ export class RandomPlayerAI extends BattlePlayer {
 		this.move = options.move || 1.0;
 		this.mega = options.mega || 0;
 		this.prng = PRNG.get(options.seed);
+		this.lastRequest = null;
 	}
 
 	override receiveError(error: Error) {
 		// If we made an unavailable choice we will receive a followup request to
 		// allow us the opportunity to correct our decision.
-		if (error.message.startsWith('[Unavailable choice]')) return;
+		if (error.message.startsWith('[Unavailable choice]') || error.message.startsWith('[Invalid choice]')) {
+			if (this.lastRequest)
+				return this.receiveRequest(this.lastRequest);
+		}
 		throw error;
 	}
 
 	override receiveRequest(request: ChoiceRequest) {
+		this.lastRequest = request;
 		if (request.wait) {
 			// wait request
 			// do nothing
@@ -82,7 +88,7 @@ export class RandomPlayerAI extends BattlePlayer {
 				canTerastallize = canTerastallize && !!active.canTerastallize;
 
 				// Determine whether we should change form if we do end up switching
-				const change = (canMegaEvo || canUltraBurst || canDynamax) && this.prng.random() < this.mega;
+				const change = (canMegaEvo || canUltraBurst || canDynamax || canTerastallize) && this.prng.random() < this.mega;
 				// If we've already dynamaxed or if we're planning on potentially dynamaxing
 				// we need to use the maxMoves instead of our regular moves
 
@@ -123,14 +129,14 @@ export class RandomPlayerAI extends BattlePlayer {
 					// NOTE: We don't generate all possible targeting combinations.
 					if (request.active.length > 1) {
 						if ([`normal`, `any`, `adjacentFoe`].includes(m.target)) {
-							move += ` ${1 + this.prng.random(2)}`;
+							move += ` ${1 + this.prng.random(request.active.length)}`;
 						}
 						if (m.target === `adjacentAlly`) {
 							move += ` -${(i ^ 1) + 1}`;
 						}
 						if (m.target === `adjacentAllyOrSelf`) {
 							if (hasAlly) {
-								move += ` -${1 + this.prng.random(2)}`;
+								move += ` -${1 + this.prng.random(request.active.length)}`;
 							} else {
 								move += ` -${i + 1}`;
 							}
@@ -191,7 +197,9 @@ export class RandomPlayerAI extends BattlePlayer {
 	}
 
 	protected chooseTeamPreview(team: AnyObject[]): string {
-		return `default`;
+		let order = [1, 2, 3, 4, 5, 6];
+		this.prng.shuffle(order);
+		return 'team ' + order.join('');
 	}
 
 	protected chooseMove(active: AnyObject, moves: { choice: string, move: AnyObject }[]): string {
